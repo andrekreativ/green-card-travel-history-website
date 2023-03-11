@@ -57,24 +57,39 @@
             var endDateInput = document.getElementById("endDate").value;
             if (destinationInput !== "" && startDateInput !== "" && endDateInput !== "") {
                 if (new Date(startDateInput) > new Date(endDateInput)) {
-                    alert("Error: End date should be after start date.");
+                alert("Error: End date should be after start date.");
                 } else {
-                    var trip = {
-                        destination: destinationInput,
-                        startDate: new Date(startDateInput),
-                        endDate: new Date(endDateInput)
-                    };
-                    trips.push(trip);
-                    var tripInput = trip.destination + ", " + formatDate(trip.startDate) + " - " + formatDate(trip.endDate);
-                    document.getElementById("tripList").innerHTML += "<li>" + tripInput + "</li>";
-                    document.getElementById("destination").value = "";
-                    document.getElementById("startDate").value = "";
-                    document.getElementById("endDate").value = "";
+                var tripStartDate = new Date(startDateInput);
+                var tripEndDate = new Date(endDateInput);
+                var timeDiff = tripEndDate.getTime() - tripStartDate.getTime();
+                var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                var trip = {
+                    destination: destinationInput,
+                    startDate: tripStartDate,
+                    endDate: tripEndDate,
+                    daysAbroad: daysAbroad
+                };
+                trips.push(trip);
+                var tripInput =
+                    trip.destination +
+                    ", " +
+                    formatDate(trip.startDate) +
+                    " - " +
+                    formatDate(trip.endDate) +
+                    ", " +
+                    daysAbroad +
+                    " days";
+                document.getElementById("tripList").innerHTML +=
+                    "<li>" + tripInput + "</li>";
+                document.getElementById("destination").value = "";
+                document.getElementById("startDate").value = "";
+                document.getElementById("endDate").value = "";
                 }
             } else {
                 alert("Error: Please fill out all fields.");
             }
         }
+
     
         function calculateTime() {
             // Calculate the total time spent abroad
