@@ -101,28 +101,34 @@
                 var startDate = trip.startDate;
                 var endDate = trip.endDate;
                 if (endDate.getTime() > today.getTime()) {
-                    endDate = today;
+                endDate = today;
                 }
                 if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    alert("Error: Invalid date format.");
+                alert("Error: Invalid date format.");
                 } else {
-                    var timeDiff = endDate.getTime() - startDate.getTime();
-                    var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    totalTimeAbroad += daysAbroad;
+                var timeDiff = endDate.getTime() - startDate.getTime();
+                var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                totalTimeAbroad += daysAbroad;
                 }
             }
-    
+
             // Calculate the total time in the last 12 months
             var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
             var startDate = new Date(last12Months);
             var endDate = new Date(today);
             var timeDiff = endDate.getTime() - startDate.getTime();
             var daysLast12Months = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    
+
             var percentAbroad = ((totalTimeAbroad / daysLast12Months) * 100).toFixed(2);
             var resultText = "You have spent " + totalTimeAbroad + " days abroad in the last 12 months, which is " + percentAbroad + "% of the time.";
-            document.getElementById("result").innerHTML = resultText;
+            var maxDaysAbroad = Math.floor(daysLast12Months / 2);
+            var remainingDaysAbroad = maxDaysAbroad - totalTimeAbroad;
+            var maxDaysAbroadText = "You can travel outside the country for up to " + maxDaysAbroad + " days, which is 50% of the time over the last 12 months.";
+            var remainingDaysAbroadText = "You have " + remainingDaysAbroad + " days left to travel outside the country.";
+
+            document.getElementById("result").innerHTML = resultText + "<br>" + maxDaysAbroadText + "<br>" + remainingDaysAbroadText;
         }
+
     </script>    
 </body>
 </html>
