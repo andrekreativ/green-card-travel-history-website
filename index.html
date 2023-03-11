@@ -10,7 +10,7 @@
 		<input type="text" id="destination" name="destination" placeholder="e.g. London, UK">
 
 		<label for="startDate">Start Date:</label>
-		<input type="date" id="startDate" name="startDate">
+		<input type="date" id="startDate" name="startDate" onchange="autoPopulateEndDate()">
 
 		<label for="endDate">End Date:</label>
 		<input type="date" id="endDate" name="endDate">
@@ -27,6 +27,14 @@
 
 	<script>
 		var trips = [];
+
+		function autoPopulateEndDate() {
+			var startDateInput = document.getElementById("startDate").value;
+			var endDateInput = new Date(startDateInput);
+			endDateInput.setDate(endDateInput.getDate() + 1);
+			var endDate = endDateInput.toISOString().slice(0,10);
+			document.getElementById("endDate").value = endDate;
+		}
 
 		function addTrip() {
 			var destinationInput = document.getElementById("destination").value;
