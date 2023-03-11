@@ -17,67 +17,79 @@
 
 		<button type="button" onclick="addTrip()">Add Trip</button>
 	</form>
+	
+	<!-- Rest of the code goes here -->
 
-	<h2>Trip List</h2>
+    <h2>Trip List</h2>
 	<ul id="tripList"></ul>
 
 	<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
 
 	<p id="result"></p>
 
-	<script>
-		var trips = [];
-
-		function autoPopulateEndDate() {
-			var startDateInput = document.getElementById("startDate").value;
-			var endDateInput = new Date(startDateInput);
-			endDateInput.setDate(endDateInput.getDate() + 1);
-			var endDate = endDateInput.toISOString().slice(0,10);
-			document.getElementById("endDate").value = endDate;
-		}
-
-		function addTrip() {
-			var destinationInput = document.getElementById("destination").value;
-			var startDateInput = document.getElementById("startDate").value;
-			var endDateInput = document.getElementById("endDate").value;
-			if (destinationInput !== "" && startDateInput !== "" && endDateInput !== "") {
-				var tripInput = destinationInput + ", " + startDateInput + " - " + endDateInput;
-				trips.push(tripInput);
-				document.getElementById("tripList").innerHTML += "<li>" + tripInput + "</li>";
-				document.getElementById("destination").value = "";
-				document.getElementById("startDate").value = "";
-				document.getElementById("endDate").value = "";
-			}
-		}
-
-		function calculateTime() {
-			// Calculate the total time spent abroad
-			var totalTimeAbroad = 0;
-			var today = new Date();
-			for (var i = 0; i < trips.length; i++) {
-				var tripDetails = trips[i].split(",");
-				var destination = tripDetails[0];
-				var startDate = new Date(tripDetails[1]);
-				var endDate = new Date(tripDetails[2]);
-				if (endDate.getTime() > today.getTime()) {
-					endDate = today;
-				}
-				var timeDiff = endDate.getTime() - startDate.getTime();
-				var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
-				totalTimeAbroad += daysAbroad;
-			}
-
-			// Calculate the total time in the last 12 months
-			var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-			var startDate = new Date(last12Months);
-			var endDate = new Date(today);
-			var timeDiff = endDate.getTime() - startDate.getTime();
-			var daysLast12Months = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-			// Display the result
-			var percentAbroad = (totalTimeAbroad / daysLast12Months) * 100;
-			document.getElementById("result").innerHTML = "You have spent " + totalTimeAbroad + " days abroad in the last 12 months, which is " + percentAbroad.toFixed(2) + "% of the time.";
-		}
-	</script>
+    <script>
+        var trips = [];
+    
+        function autoPopulateEndDate() {
+            var startDateInput = document.getElementById("startDate").value;
+            var endDateInput = new Date(startDateInput);
+            endDateInput.setDate(endDateInput.getDate() + 1);
+            var endDate = endDateInput.toISOString().slice(0,10);
+            document.getElementById("endDate").value = endDate;
+        }
+    
+        function addTrip() {
+            var destinationInput = document.getElementById("destination").value;
+            var startDateInput = document.getElementById("startDate").value;
+            var endDateInput = document.getElementById("endDate").value;
+            if (destinationInput !== "" && startDateInput !== "" && endDateInput !== "") {
+                if (new Date(startDateInput) > new Date(endDateInput)) {
+                    alert("Error: End date should be after start date.");
+                } else {
+                    var tripInput = destinationInput + ", " + startDateInput + " - " + endDateInput;
+                    trips.push(tripInput);
+                    document.getElementById("tripList").innerHTML += "<li>" + tripInput + "</li>";
+                    document.getElementById("destination").value = "";
+                    document.getElementById("startDate").value = "";
+                    document.getElementById("endDate").value = "";
+                }
+            } else {
+                alert("Error: Please fill out all fields.");
+            }
+        }
+    
+        function calculateTime() {
+            // Calculate the total time spent abroad
+            var totalTimeAbroad = 0;
+            var today = new Date();
+            for (var i = 0; i < trips.length; i++) {
+                var tripDetails = trips[i].split(",");
+                var destination = tripDetails[0];
+                var startDate = new Date(tripDetails[1]);
+                var endDate = new Date(tripDetails[2]);
+                if (endDate.getTime() > today.getTime()) {
+                    endDate = today;
+                }
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                    alert("Error: Invalid date format.");
+                } else {
+                    var timeDiff = endDate.getTime() - startDate.getTime();
+                    var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    totalTimeAbroad += daysAbroad;
+                }
+            }
+    
+            // Calculate the total time in the last 12 months
+            var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+            var startDate = new Date(last12Months);
+            var endDate = new Date(today);
+            var timeDiff = endDate.getTime() - startDate.getTime();
+            var daysLast12Months = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+            var percentAbroad = ((totalTimeAbroad / daysLast12Months) * 100).toFixed(2);
+            var resultText = "You have spent " + totalTimeAbroad + " days abroad in the last 12 months, which is " + percentAbroad + "% of the time.";
+            document.getElementById("result").innerHTML = resultText;
+        }
+    </script>
 </body>
 </html>
