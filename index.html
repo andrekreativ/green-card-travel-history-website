@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Travel History</title>
+</head>
+<body>
+	<h1>Travel History</h1>
+	<form>
+		<label for="trip1">Trip 1:</label>
+		<input type="text" id="trip1" name="trip1" placeholder="Enter trip details">
+
+		<label for="trip2">Trip 2:</label>
+		<input type="text" id="trip2" name="trip2" placeholder="Enter trip details">
+
+		<!-- Add more trip inputs as needed -->
+
+		<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
+	</form>
+
+	<p id="result"></p>
+
+	<script>
+		function calculateTime() {
+			// Get the start and end dates for each trip
+			var trip1 = document.getElementById("trip1").value.split(",");
+			var trip2 = document.getElementById("trip2").value.split(",");
+			// Add more trips as needed
+
+			// Calculate the total time spent abroad
+			var totalTimeAbroad = 0;
+			var today = new Date();
+			for (var i = 0; i < arguments.length; i++) {
+				var startDate = new Date(arguments[i][0]);
+				var endDate = new Date(arguments[i][1]);
+				if (endDate.getTime() > today.getTime()) {
+					endDate = today;
+				}
+				var timeDiff = endDate.getTime() - startDate.getTime();
+				var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				totalTimeAbroad += daysAbroad;
+			}
+
+			// Calculate the total time in the last 12 months
+			var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+			var startDate = new Date(last12Months);
+			var endDate = new Date(today);
+			var timeDiff = endDate.getTime() - startDate.getTime();
+			var daysLast12Months = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+			// Display the result
+			var percentAbroad = (totalTimeAbroad / daysLast12Months) * 100;
+			document.getElementById("result").innerHTML = "You have spent " + totalTimeAbroad + " days abroad in the last 12 months, which is " + percentAbroad.toFixed(2) + "% of the time.";
+		}
+	</script>
+</body>
+</html>
