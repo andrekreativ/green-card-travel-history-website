@@ -20,7 +20,10 @@
 
     <h2>Trip List</h2>
 	<ul id="tripList"></ul>
-
+    
+    <h2>Trips Outside the Last 12 Months:</h2>
+    <ul id="oldTripList"></ul>
+    
 	<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
 
 	<p id="result"></p>
@@ -55,65 +58,70 @@
             var destinationInput = document.getElementById("destination").value;
             var startDateInput = document.getElementById("startDate").value;
             var endDateInput = document.getElementById("endDate").value;
+
             if (destinationInput !== "" && startDateInput !== "" && endDateInput !== "") {
                 if (new Date(startDateInput) > new Date(endDateInput)) {
-                alert("Error: End date should be after start date.");
+                    alert("Error: End date should be after start date.");
                 } else {
-                var tripStartDate = new Date(startDateInput);
-                var tripEndDate = new Date(endDateInput);
-                var timeDiff = tripEndDate.getTime() - tripStartDate.getTime();
-                var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                var trip = {
-                    destination: destinationInput,
-                    startDate: tripStartDate,
-                    endDate: tripEndDate,
-                    daysAbroad: daysAbroad
-                };
-                trips.push(trip);
-                var tripInput =
-                    trip.destination +
-                    ", " +
-                    formatDate(trip.startDate) +
-                    " - " +
-                    formatDate(trip.endDate) +
-                    ", " +
-                    daysAbroad +
-                    " days";
-                document.getElementById("tripList").innerHTML +=
-                    "<li>" + tripInput + "</li>";
-                document.getElementById("destination").value = "";
-                document.getElementById("startDate").value = "";
-                document.getElementById("endDate").value = "";
+                    var tripStartDate = new Date(startDateInput);
+                    var tripEndDate = new Date(endDateInput);
+                    var timeDiff = tripEndDate.getTime() - tripStartDate.getTime();
+                    var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    var trip = {
+                        destination: destinationInput,
+                        startDate: tripStartDate,
+                        endDate: tripEndDate,
+                        daysAbroad: daysAbroad
+                    };
+                    trips.push(trip);
+                    var tripInput =
+                        trip.destination +
+                        ", " +
+                        formatDate(trip.startDate) +
+                        " - " +
+                        formatDate(trip.endDate) +
+                        ", " +
+                        daysAbroad +
+                        " days";
+                    if (trip.startDate < new Date(today.getFullYear() - 1, today.getMonth(), today.getDate())) {
+                        document.getElementById("oldTripList").innerHTML +=
+                        "<li>" + tripInput + "</li>";
+                    } else {
+                        document.getElementById("tripList").innerHTML +=
+                        "<li>" + tripInput + "</li>";
+                    }
+                    document.getElementById("destination").value = "";
+                    document.getElementById("startDate").value = "";
+                    document.getElementById("endDate").value = "";
                 }
             } else {
                 alert("Error: Please fill out all fields.");
             }
         }
 
-    
         function calculateTime() {
             // Calculate the total time spent abroad
             var totalTimeAbroad = 0;
             var today = new Date();
+            var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
             for (var i = 0; i < trips.length; i++) {
                 var trip = trips[i];
                 var destination = trip.destination;
                 var startDate = trip.startDate;
                 var endDate = trip.endDate;
                 if (endDate.getTime() > today.getTime()) {
-                endDate = today;
+                    endDate = today;
                 }
                 if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                alert("Error: Invalid date format.");
-                } else {
-                var timeDiff = endDate.getTime() - startDate.getTime();
-                var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                totalTimeAbroad += daysAbroad;
+                    alert("Error: Invalid date format.");
+                } else if (startDate >= last12Months) { // Check if trip occurred within last 12 months
+                    var timeDiff = endDate.getTime() - startDate.getTime();
+                    var daysAbroad = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    totalTimeAbroad += daysAbroad;
                 }
             }
 
             // Calculate the total time in the last 12 months
-            var last12Months = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
             var startDate = new Date(last12Months);
             var endDate = new Date(today);
             var timeDiff = endDate.getTime() - startDate.getTime();
@@ -128,7 +136,6 @@
 
             document.getElementById("result").innerHTML = resultText + "<br>" + maxDaysAbroadText + "<br>" + remainingDaysAbroadText;
         }
-
     </script>    
 </body>
 </html>
