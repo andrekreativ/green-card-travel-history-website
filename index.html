@@ -6,8 +6,14 @@
 <body>
 	<h1>Travel History</h1>
 	<form>
-		<label for="trip">Enter trip details:</label>
-		<input type="text" id="trip" name="trip" placeholder="e.g. New York, USA, 01/01/2023 - 01/07/2023">
+		<label for="destination">Destination:</label>
+		<input type="text" id="destination" name="destination" placeholder="e.g. London, UK">
+
+		<label for="startDate">Start Date:</label>
+		<input type="date" id="startDate" name="startDate">
+
+		<label for="endDate">End Date:</label>
+		<input type="date" id="endDate" name="endDate">
 
 		<button type="button" onclick="addTrip()">Add Trip</button>
 	</form>
@@ -23,11 +29,16 @@
 		var trips = [];
 
 		function addTrip() {
-			var tripInput = document.getElementById("trip").value;
-			if (tripInput !== "") {
+			var destinationInput = document.getElementById("destination").value;
+			var startDateInput = document.getElementById("startDate").value;
+			var endDateInput = document.getElementById("endDate").value;
+			if (destinationInput !== "" && startDateInput !== "" && endDateInput !== "") {
+				var tripInput = destinationInput + ", " + startDateInput + " - " + endDateInput;
 				trips.push(tripInput);
 				document.getElementById("tripList").innerHTML += "<li>" + tripInput + "</li>";
-				document.getElementById("trip").value = "";
+				document.getElementById("destination").value = "";
+				document.getElementById("startDate").value = "";
+				document.getElementById("endDate").value = "";
 			}
 		}
 
@@ -37,8 +48,9 @@
 			var today = new Date();
 			for (var i = 0; i < trips.length; i++) {
 				var tripDetails = trips[i].split(",");
-				var startDate = new Date(tripDetails[2]);
-				var endDate = new Date(tripDetails[3]);
+				var destination = tripDetails[0];
+				var startDate = new Date(tripDetails[1]);
+				var endDate = new Date(tripDetails[2]);
 				if (endDate.getTime() > today.getTime()) {
 					endDate = today;
 				}
