@@ -6,32 +6,39 @@
 <body>
 	<h1>Travel History</h1>
 	<form>
-		<label for="trip1">Trip 1:</label>
-		<input type="text" id="trip1" name="trip1" placeholder="Enter trip details">
+		<label for="trip">Enter trip details:</label>
+		<input type="text" id="trip" name="trip" placeholder="e.g. New York, USA, 01/01/2023 - 01/07/2023">
 
-		<label for="trip2">Trip 2:</label>
-		<input type="text" id="trip2" name="trip2" placeholder="Enter trip details">
-
-		<!-- Add more trip inputs as needed -->
-
-		<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
+		<button type="button" onclick="addTrip()">Add Trip</button>
 	</form>
+
+	<h2>Trip List</h2>
+	<ul id="tripList"></ul>
+
+	<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
 
 	<p id="result"></p>
 
 	<script>
-		function calculateTime() {
-			// Get the start and end dates for each trip
-			var trip1 = document.getElementById("trip1").value.split(",");
-			var trip2 = document.getElementById("trip2").value.split(",");
-			// Add more trips as needed
+		var trips = [];
 
+		function addTrip() {
+			var tripInput = document.getElementById("trip").value;
+			if (tripInput !== "") {
+				trips.push(tripInput);
+				document.getElementById("tripList").innerHTML += "<li>" + tripInput + "</li>";
+				document.getElementById("trip").value = "";
+			}
+		}
+
+		function calculateTime() {
 			// Calculate the total time spent abroad
 			var totalTimeAbroad = 0;
 			var today = new Date();
-			for (var i = 0; i < arguments.length; i++) {
-				var startDate = new Date(arguments[i][0]);
-				var endDate = new Date(arguments[i][1]);
+			for (var i = 0; i < trips.length; i++) {
+				var tripDetails = trips[i].split(",");
+				var startDate = new Date(tripDetails[2]);
+				var endDate = new Date(tripDetails[3]);
 				if (endDate.getTime() > today.getTime()) {
 					endDate = today;
 				}
