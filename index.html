@@ -25,6 +25,7 @@
     <ul id="oldTripList"></ul>
     
 	<button type="button" onclick="calculateTime()">Calculate Time Spent Abroad</button>
+  <button type="button" onclick="exportTrips()">Export trips</button>
 
 	<p id="result"></p>
 
@@ -140,6 +141,37 @@
                 resultText += "You can travel for " + daysCanTravel + " more days.";
             }
             document.getElementById("result").innerHTML = resultText;
+        }
+
+        function exportTrips() {
+          var exportString = '"Destination","Start Date","End Date"\n';
+          for (var i = 0; i < trips.length; i++) {
+            var trip = trips[i];
+            exportString +=
+              '"' +
+              trip.destination +
+              '","' +
+              formatDate(trip.startDate) +
+              '","' +
+              formatDate(trip.endDate) +
+              '"\n';
+          }
+          var filename = "trip-data.csv";
+          var blob = new Blob([exportString], { type: "text/csv;charset=utf-8;" });
+          if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, filename);
+          } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) {
+              var url = URL.createObjectURL(blob);
+              link.setAttribute("href", url);
+              link.setAttribute("download", filename);
+              link.style.visibility = "hidden";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+          }
         }
     </script>
 </body>
